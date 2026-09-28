@@ -1,0 +1,15 @@
+# Artefactos de compilación Maven
+target/
+
+# Archivos temporales del IDE
+.idea/
+*.iml
+.settings/
+.classpath
+.project
+
+# macOS
+.DS_Store
+
+# Archivos de prueba sueltos
+test.txt
