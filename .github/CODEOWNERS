@@ -1,0 +1,79 @@
+# =============================================================================
+# CODEOWNERS
+# -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# 1. Propietario global (fallback para cualquier archivo no cubierto abajo)
+# -----------------------------------------------------------------------------
+*                                                   @guillermolfuentes @Barlowe90
+
+
+# -----------------------------------------------------------------------------
+# 2. Configuración del proyecto (Maven, EditorConfig, Git hooks…)
+# -----------------------------------------------------------------------------
+pom.xml                                             @guillermolfuentes
+.editorconfig                                       @guillermolfuentes
+.gitattributes                                      @guillermolfuentes
+.gitignore                                          @guillermolfuentes
+.githooks/**                                        @guillermolfuentes
+
+
+# -----------------------------------------------------------------------------
+# 3. Documentación
+# -----------------------------------------------------------------------------
+README.md                                           @guillermolfuentes @Barlowe90
+docs/**                                             @guillermolfuentes @Barlowe90
+
+
+# -----------------------------------------------------------------------------
+# 4. Configuración de GitHub (.github/)
+# -----------------------------------------------------------------------------
+.github/**                                          @guillermolfuentes
+
+
+# -----------------------------------------------------------------------------
+# 5. Código fuente – capa de dominio (entidades / modelos)
+# -----------------------------------------------------------------------------
+src/main/java/com/tasks/taskmanager/domain/**       @guillermolfuentes
+
+
+# -----------------------------------------------------------------------------
+# 6. Código fuente – capa de repositorio (acceso a datos)
+# -----------------------------------------------------------------------------
+src/main/java/com/tasks/taskmanager/repository/**   @guillermolfuentes
+
+
+# -----------------------------------------------------------------------------
+# 7. Código fuente – capa de servicio (lógica de negocio)
+# -----------------------------------------------------------------------------
+src/main/java/com/tasks/taskmanager/service/**      @guillermolfuentes @Barlowe90
+
+
+# -----------------------------------------------------------------------------
+# 8. Código fuente – capa de API/controlador
+# -----------------------------------------------------------------------------
+src/main/java/com/tasks/taskmanager/controller/**   @Barlowe90
+
+
+# -----------------------------------------------------------------------------
+# 9. Código fuente – DTOs
+# -----------------------------------------------------------------------------
+src/main/java/com/tasks/taskmanager/dto/**          @guillermolfuentes @Barlowe90
+
+
+# -----------------------------------------------------------------------------
+# 10. Código fuente – manejo de excepciones
+# -----------------------------------------------------------------------------
+src/main/java/com/tasks/taskmanager/exception/**    @guillermolfuentes
+
+
+# -----------------------------------------------------------------------------
+# 11. Recursos de configuración (application.properties / yml)
+# -----------------------------------------------------------------------------
+src/main/resources/**                               @guillermolfuentes
+
+
+# -----------------------------------------------------------------------------
+# 12. Tests
+# -----------------------------------------------------------------------------
+src/test/**                                         @guillermolfuentes @Barlowe90
