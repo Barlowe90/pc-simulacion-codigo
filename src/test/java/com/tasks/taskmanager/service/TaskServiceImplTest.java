@@ -182,6 +182,49 @@ class TaskServiceImplTest {
   }
 
   // -----------------------------------------------------------------------
+  // TEST 9: searchByText con query vacía devuelve lista vacía sin llamar al repo
+  // -----------------------------------------------------------------------
+  @Test
+  @DisplayName("T09 - searchByText con query vacía devuelve lista vacía")
+  void searchByText_withBlankQuery_returnsEmptyList() {
+    List<TaskResponse> result = taskService.searchByText("   ");
+
+    assertThat(result).isEmpty();
+    verify(taskRepository, never()).findAll(any(org.springframework.data.jpa.domain.Specification.class));
+  }
+
+  // -----------------------------------------------------------------------
+  // TEST 10: searchByText con query válida delega en el repositorio
+  // -----------------------------------------------------------------------
+  @Test
+  @DisplayName("T10 - searchByText con query válida devuelve tareas coincidentes")
+  void searchByText_withValidQuery_returnsmatchingTasks() {
+    Task t1 = buildTask(1L, "Implementar login OAuth", TaskStatus.PENDING, TaskPriority.HIGH, futureDate);
+    when(taskRepository.findAll(any(org.springframework.data.jpa.domain.Specification.class)))
+        .thenReturn(List.of(t1));
+
+    List<TaskResponse> result = taskService.searchByText("oauth");
+
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).getTitle()).isEqualTo("Implementar login OAuth");
+    verify(taskRepository).findAll(any(org.springframework.data.jpa.domain.Specification.class));
+  }
+
+  // -----------------------------------------------------------------------
+  // TEST 11: searchByText con query sin coincidencias devuelve lista vacía
+  // -----------------------------------------------------------------------
+  @Test
+  @DisplayName("T11 - searchByText sin coincidencias devuelve lista vacía")
+  void searchByText_withNoMatches_returnsEmptyList() {
+    when(taskRepository.findAll(any(org.springframework.data.jpa.domain.Specification.class)))
+        .thenReturn(List.of());
+
+    List<TaskResponse> result = taskService.searchByText("xyz_inexistente");
+
+    assertThat(result).isEmpty();
+  }
+
+  // -----------------------------------------------------------------------
   // Helpers
   // -----------------------------------------------------------------------
 
