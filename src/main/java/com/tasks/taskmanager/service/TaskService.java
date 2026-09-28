@@ -1,6 +1,7 @@
 package com.tasks.taskmanager.service;
 
 import com.tasks.taskmanager.dto.TaskFilterParams;
+import com.tasks.taskmanager.dto.TaskPatchRequest;
 import com.tasks.taskmanager.dto.TaskRequest;
 import com.tasks.taskmanager.dto.TaskResponse;
 import java.util.List;
@@ -29,6 +30,15 @@ public interface TaskService {
 
   /** Actualiza completamente una tarea existente. */
   TaskResponse updateTask(Long id, TaskRequest request);
+
+  /**
+   * Actualiza parcialmente una tarea existente: solo se modifican los campos no nulos de {@code
+   * request}. Lanza {@link com.tasks.taskmanager.exception.TaskNotFoundException} si no existe.
+   *
+   * <p>TODO: falta aplicar la validación de transición de estado (la misma regla que en {@link
+   * #updateTask}) cuando {@code request.getStatus()} no sea nulo.
+   */
+  TaskResponse patchTask(Long id, TaskPatchRequest request);
 
   /**
    * Elimina una tarea. Lanza {@link com.tasks.taskmanager.exception.TaskNotFoundException} si no

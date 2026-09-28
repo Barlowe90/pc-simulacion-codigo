@@ -3,6 +3,7 @@ package com.tasks.taskmanager.controller;
 import com.tasks.taskmanager.domain.TaskPriority;
 import com.tasks.taskmanager.domain.TaskStatus;
 import com.tasks.taskmanager.dto.TaskFilterParams;
+import com.tasks.taskmanager.dto.TaskPatchRequest;
 import com.tasks.taskmanager.dto.TaskRequest;
 import com.tasks.taskmanager.dto.TaskResponse;
 import com.tasks.taskmanager.service.TaskService;
@@ -92,6 +93,13 @@ public class TaskController {
     public ResponseEntity<TaskResponse> updateTask(
             @PathVariable Long id, @Valid @RequestBody TaskRequest request) {
         return ResponseEntity.ok(taskService.updateTask(id, request));
+    }
+
+    /** PATCH /api/v1/tasks/{id} Actualiza parcialmente una tarea existente. */
+    @PatchMapping("/{id}")
+    public ResponseEntity<TaskResponse> patchTask(
+            @PathVariable Long id, @Valid @RequestBody TaskPatchRequest request) {
+        return ResponseEntity.ok(taskService.patchTask(id, request));
     }
 
     /** DELETE /api/v1/tasks/{id} Elimina una tarea (404 si no existe). */
