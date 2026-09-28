@@ -12,6 +12,9 @@ import com.tasks.taskmanager.repository.TaskSpecification;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -61,14 +64,15 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<TaskResponse> getFilteredTasks(TaskFilterParams params) {
+  public Page<TaskResponse> getFilteredTasks(TaskFilterParams params, int page, int size) {
     Specification<Task> spec =
         TaskSpecification.withFilters(
             params.getStatus(), params.getPriority(), params.getDueBefore(), params.getDueAfter());
 
     Sort sort = buildSort(params.getSortBy(), params.getSortDir());
+    Pageable pageable = PageRequest.of(page, size, sort);
 
-    return taskRepository.findAll(spec, sort).stream().map(TaskResponse::from).toList();
+    return taskRepository.findAll(spec, pageable).map(TaskResponse::from);
   }
 
   @Override
@@ -116,9 +120,7 @@ public class TaskServiceImpl implements TaskService {
     if (query == null || query.isBlank()) {
       return List.of();
     }
-    return taskRepository
-        .findAll(TaskSpecification.containsText(query.trim()))
-        .stream()
+    return taskRepository.findAll(TaskSpecification.containsText(query.trim())).stream()
         .map(TaskResponse::from)
         .toList();
   }

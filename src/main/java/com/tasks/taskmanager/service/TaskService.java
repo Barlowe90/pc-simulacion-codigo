@@ -4,6 +4,7 @@ import com.tasks.taskmanager.dto.TaskFilterParams;
 import com.tasks.taskmanager.dto.TaskRequest;
 import com.tasks.taskmanager.dto.TaskResponse;
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 /** Contrato del servicio de gestión de tareas. */
 public interface TaskService {
@@ -15,10 +16,10 @@ public interface TaskService {
   List<TaskResponse> getAllTasks();
 
   /**
-   * Devuelve las tareas que cumplen los filtros indicados en {@code params}, ordenadas según los
-   * campos {@code sortBy} y {@code sortDir}.
+   * Devuelve una página de tareas que cumplen los filtros indicados en {@code params}, ordenadas
+   * según los campos {@code sortBy} y {@code sortDir}.
    */
-  List<TaskResponse> getFilteredTasks(TaskFilterParams params);
+  Page<TaskResponse> getFilteredTasks(TaskFilterParams params, int page, int size);
 
   /**
    * Devuelve una tarea por su identificador. Lanza {@link

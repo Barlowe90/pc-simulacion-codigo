@@ -17,6 +17,7 @@ La aplicación expone una API REST completa para gestionar tareas (*To-Do*). Cad
 
 - **CRUD completo**: crear, listar (con filtros), obtener, actualizar y borrar tareas.
 - **Filtrado**: por estado, prioridad y fecha límite mediante parámetros de query.
+- **Paginación y ordenación**: listado por páginas configurable y compatible con los filtros.
 - **Validaciones de negocio**: no se puede crear una tarea con fecha límite pasada, ni realizar transiciones de estado inválidas.
 - **Manejo de errores centralizado**: respuestas `404` y `400` con cuerpo JSON estructurado (sin trazas de excepción).
 - **Persistencia en memoria**: H2 embebido; los datos se pierden al reiniciar (sin base de datos externa).
@@ -92,11 +93,11 @@ curl -s -X POST http://localhost:8080/api/tasks \
      -H "Content-Type: application/json" \
      -d '{"title":"Mi primera tarea","description":"Descripción","priority":"HIGH","dueDate":"2099-12-31"}'
 
-# Listar todas las tareas
-curl -s http://localhost:8080/api/tasks
+# Listar la primera página con un máximo de 10 tareas
+curl -s "http://localhost:8080/api/v1/tasks?page=0&size=10"
 
-# Filtrar por estado y prioridad
-curl -s "http://localhost:8080/api/tasks?status=TODO&priority=HIGH"
+# Combinar la paginación con el filtro por estado
+curl -s "http://localhost:8080/api/v1/tasks?status=PENDING&page=0&size=5"
 
 # Obtener una tarea por id
 curl -s http://localhost:8080/api/tasks/1

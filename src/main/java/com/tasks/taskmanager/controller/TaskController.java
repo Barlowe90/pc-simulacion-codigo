@@ -9,6 +9,7 @@ import com.tasks.taskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,10 +45,12 @@ public class TaskController {
    *   <li>{@code dueAfter} — fecha ISO (yyyy-MM-dd): tareas con dueDate ≥ este valor
    *   <li>{@code sortBy} — dueDate (default) | priority | createdAt
    *   <li>{@code sortDir} — asc (default) | desc
+   *   <li>{@code page} — número de página, comenzando en 0 (default: 0)
+   *   <li>{@code size} — número máximo de tareas por página (default: 10)
    * </ul>
    */
   @GetMapping
-  public ResponseEntity<List<TaskResponse>> getTasks(
+  public ResponseEntity<Page<TaskResponse>> getTasks(
       @RequestParam(required = false) TaskStatus status,
       @RequestParam(required = false) TaskPriority priority,
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -55,7 +58,9 @@ public class TaskController {
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           LocalDate dueAfter,
       @RequestParam(required = false, defaultValue = "dueDate") String sortBy,
-      @RequestParam(required = false, defaultValue = "asc") String sortDir) {
+      @RequestParam(required = false, defaultValue = "asc") String sortDir,
+      @RequestParam(required = false, defaultValue = "0") int page,
+      @RequestParam(required = false, defaultValue = "10") int size) {
 
     // esto es un conflicto
 
@@ -70,7 +75,7 @@ public class TaskController {
 
     params.setSortDir(sortDir);
 
-    return ResponseEntity.ok(taskService.getFilteredTasks(params));
+    return ResponseEntity.ok(taskService.getFilteredTasks(params, page, size));
   }
 
   /** GET /api/v1/tasks/{id} Devuelve una tarea por su id (404 si no existe). */
