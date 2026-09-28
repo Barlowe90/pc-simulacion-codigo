@@ -109,8 +109,6 @@ public class TaskServiceImpl implements TaskService {
   public TaskResponse patchTask(Long id, TaskPatchRequest request) {
     Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
 
-    // TODO: falta validar aquí la transición de estado (ver validateTransition) antes de aplicar
-    // request.getStatus(), igual que hace updateTask.
     if (request.getTitle() != null) {
       task.setTitle(request.getTitle());
     }
@@ -118,6 +116,7 @@ public class TaskServiceImpl implements TaskService {
       task.setDescription(request.getDescription());
     }
     if (request.getStatus() != null) {
+      validateTransition(task.getStatus(), request.getStatus());
       task.setStatus(request.getStatus());
     }
     if (request.getPriority() != null) {
