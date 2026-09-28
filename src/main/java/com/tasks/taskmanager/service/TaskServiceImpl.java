@@ -3,6 +3,7 @@ package com.tasks.taskmanager.service;
 import com.tasks.taskmanager.domain.Task;
 import com.tasks.taskmanager.domain.TaskStatus;
 import com.tasks.taskmanager.dto.TaskFilterParams;
+import com.tasks.taskmanager.dto.TaskPatchRequest;
 import com.tasks.taskmanager.dto.TaskRequest;
 import com.tasks.taskmanager.dto.TaskResponse;
 import com.tasks.taskmanager.exception.InvalidTaskStateException;
@@ -98,6 +99,33 @@ public class TaskServiceImpl implements TaskService {
     task.setStatus(request.getStatus());
     task.setPriority(request.getPriority());
     task.setDueDate(request.getDueDate());
+
+    return TaskResponse.from(taskRepository.save(task));
+  }
+
+  // ------------------------------------------------------------------ PATCH
+
+  @Override
+  public TaskResponse patchTask(Long id, TaskPatchRequest request) {
+    Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException(id));
+
+    // TODO: falta validar aquí la transición de estado (ver validateTransition) antes de aplicar
+    // request.getStatus(), igual que hace updateTask.
+    if (request.getTitle() != null) {
+      task.setTitle(request.getTitle());
+    }
+    if (request.getDescription() != null) {
+      task.setDescription(request.getDescription());
+    }
+    if (request.getStatus() != null) {
+      task.setStatus(request.getStatus());
+    }
+    if (request.getPriority() != null) {
+      task.setPriority(request.getPriority());
+    }
+    if (request.getDueDate() != null) {
+      task.setDueDate(request.getDueDate());
+    }
 
     return TaskResponse.from(taskRepository.save(task));
   }
