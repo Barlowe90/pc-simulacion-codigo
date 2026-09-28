@@ -153,3 +153,4 @@ tipo(ámbito): descripción en imperativo
 | `ci`       | Cambios en el pipeline de CI/CD                     |
 
 Ejemplo: `feat(tasks): añade filtro de búsqueda por prioridad`
+prueba
