@@ -190,7 +190,8 @@ class TaskServiceImplTest {
     List<TaskResponse> result = taskService.searchByText("   ");
 
     assertThat(result).isEmpty();
-    verify(taskRepository, never()).findAll(any(org.springframework.data.jpa.domain.Specification.class));
+    verify(taskRepository, never())
+        .findAll(any(org.springframework.data.jpa.domain.Specification.class));
   }
 
   // -----------------------------------------------------------------------
@@ -199,7 +200,8 @@ class TaskServiceImplTest {
   @Test
   @DisplayName("T10 - searchByText con query válida devuelve tareas coincidentes")
   void searchByText_withValidQuery_returnsmatchingTasks() {
-    Task t1 = buildTask(1L, "Implementar login OAuth", TaskStatus.PENDING, TaskPriority.HIGH, futureDate);
+    Task t1 =
+        buildTask(1L, "Implementar login OAuth", TaskStatus.PENDING, TaskPriority.HIGH, futureDate);
     when(taskRepository.findAll(any(org.springframework.data.jpa.domain.Specification.class)))
         .thenReturn(List.of(t1));
 
