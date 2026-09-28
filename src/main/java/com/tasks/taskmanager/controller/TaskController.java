@@ -74,6 +74,13 @@ public class TaskController {
   }
 
   /** GET /api/v1/tasks/{id} Devuelve una tarea por su id (404 si no existe). */
+  @GetMapping("/search")
+  public ResponseEntity<List<TaskResponse>> searchTasks(
+      @RequestParam(name = "q", required = false, defaultValue = "") String query) {
+    return ResponseEntity.ok(taskService.searchByText(query));
+  }
+
+  /** GET /api/v1/tasks/{id} Devuelve una tarea por su id (404 si no existe). */
   @GetMapping("/{id}")
   public ResponseEntity<TaskResponse> getTaskById(@PathVariable Long id) {
     return ResponseEntity.ok(taskService.getTaskById(id));

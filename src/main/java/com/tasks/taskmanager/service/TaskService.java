@@ -34,4 +34,10 @@ public interface TaskService {
    * existe.
    */
   void deleteTask(Long id);
+
+  /**
+   * Busca tareas cuyo título o descripción contengan {@code query} (insensible a mayúsculas).
+   * Devuelve lista vacía si no hay coincidencias.
+   */
+  List<TaskResponse> searchByText(String query);
 }

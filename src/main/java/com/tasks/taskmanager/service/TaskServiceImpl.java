@@ -108,6 +108,21 @@ public class TaskServiceImpl implements TaskService {
     taskRepository.deleteById(id);
   }
 
+  // ----------------------------------------------------------- SEARCH
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<TaskResponse> searchByText(String query) {
+    if (query == null || query.isBlank()) {
+      return List.of();
+    }
+    return taskRepository
+        .findAll(TaskSpecification.containsText(query.trim()))
+        .stream()
+        .map(TaskResponse::from)
+        .toList();
+  }
+
   // -------------------------------------------------------- BUSINESS RULES
 
   /** Regla: la fecha límite no puede ser hoy ni en el pasado. */

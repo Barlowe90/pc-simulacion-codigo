@@ -64,4 +64,17 @@ public final class TaskSpecification {
   public static Specification<Task> dueAfter(LocalDate date) {
     return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("dueDate"), date);
   }
+
+  /**
+   * Filtra tareas cuyo {@code title} o {@code description} contengan {@code text} (insensible a
+   * mayúsculas).
+   */
+  public static Specification<Task> containsText(String text) {
+    return (root, query, cb) -> {
+      String pattern = "%" + text.toLowerCase() + "%";
+      return cb.or(
+          cb.like(cb.lower(root.get("title")), pattern),
+          cb.like(cb.lower(root.get("description")), pattern));
+    };
+  }
 }
