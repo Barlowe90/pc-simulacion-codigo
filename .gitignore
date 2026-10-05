@@ -13,3 +13,6 @@ target/
 
 # Archivos de prueba sueltos
 test.txt
+
+# Env
+.env
