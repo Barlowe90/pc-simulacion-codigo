@@ -20,7 +20,7 @@ La aplicación expone una API REST completa para gestionar tareas (*To-Do*). Cad
 - **Paginación y ordenación**: listado por páginas configurable y compatible con los filtros.
 - **Validaciones de negocio**: no se puede crear una tarea con fecha límite pasada, ni realizar transiciones de estado inválidas.
 - **Manejo de errores centralizado**: respuestas `404` y `400` con cuerpo JSON estructurado (sin trazas de excepción).
-- **Persistencia en memoria**: H2 embebido; los datos se pierden al reiniciar (sin base de datos externa).
+- **Persistencia en PostgreSQL**: Docker Compose guarda los datos en el volumen `db-data`, que se conserva al detener los contenedores.
 - **Formateo automático**: Spotless con Google Java Format, aplicado en cada commit mediante un hook de pre-commit.
 - **Tests unitarios**: cobertura de reglas de negocio reales en servicio y repositorio (sin tests de integración que levanten contexto Spring).
 
@@ -44,6 +44,8 @@ src/
 ---
 
 ## Requisitos previos
+
+Para compilar y ejecutar directamente en tu máquina:
 
 | Herramienta | Versión mínima | Comprobación   |
 |-------------|----------------|----------------|
@@ -79,11 +81,70 @@ mvn spotless:apply   # aplica el formato automáticamente
 
 ## Cómo arrancar
 
+La ejecución directa requiere una instancia de PostgreSQL y las variables `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME` y `SPRING_DATASOURCE_PASSWORD` configuradas con sus datos de conexión. Para levantar la API junto con su base de datos, utiliza Docker Compose como se indica a continuación.
+
 ```bash
 java -jar target/task-manager-1.0.0.jar
 ```
 
 La API estará disponible en `http://localhost:8080`.
+
+### Con Docker
+
+Necesitas Docker en ejecución y Docker Compose v2 (`docker compose version`). No necesitas instalar Java ni Maven en tu máquina: el `Dockerfile` compila la aplicación y genera la imagen de ejecución.
+
+Desde la raíz del repositorio clonado:
+
+```bash
+cp .env.example .env
+```
+
+Edita `.env` y cambia `POSTGRES_PASSWORD=cambia_esto` por tu contraseña. Puedes ajustar también `POSTGRES_DB` y `POSTGRES_USER`. El archivo `.env` no se versiona.
+
+```bash
+# Construir la imagen y arrancar PostgreSQL y la API en segundo plano
+docker compose up --build -d
+
+# Consultar el estado y los logs de la API
+docker compose ps
+docker compose logs -f api
+```
+
+Compose espera a que PostgreSQL esté preparado antes de arrancar la API. Cuando termine el arranque, comprueba su estado:
+
+```bash
+curl -fsS http://localhost:8080/actuator/health
+```
+
+La respuesta debe incluir `"status":"UP"`. La API estará en `http://localhost:8080` y PostgreSQL en `127.0.0.1:5432`. Ambos puertos deben estar libres en tu máquina.
+
+Para detener el proyecto:
+
+```bash
+docker compose down
+```
+
+Los datos de PostgreSQL se conservan en el volumen `db-data`. Si quieres borrar también la base de datos y empezar de cero, ejecuta `docker compose down -v` (elimina los datos). Cambiar las credenciales de `.env` no actualiza una base de datos ya inicializada en ese volumen.
+
+### Con Dev Container
+
+Necesitas Docker en ejecución, Visual Studio Code y la extensión **Dev Containers** (`ms-vscode-remote.remote-containers`). La configuración de `.devcontainer/devcontainer.json` proporciona Java 21, Maven y Docker dentro del contenedor, además de las extensiones de Java y Docker para VS Code.
+
+1. Clona el repositorio y abre su carpeta en VS Code.
+2. Abre la paleta de comandos (`F1`) y ejecuta **Dev Containers: Reopen in Container**.
+3. Espera a que se construya el entorno y termine `postCreateCommand`. Este paso crea `.env` a partir de `.env.example` si no existe, activa los hooks de Git y descarga las dependencias de Maven.
+4. Edita `.env` y establece tu contraseña en `POSTGRES_PASSWORD`.
+5. En la terminal integrada del Dev Container, arranca el proyecto:
+
+   ```bash
+   docker compose up --build -d
+   ```
+
+6. Comprueba el arranque con `docker compose ps`, `docker compose logs -f api` y `curl -fsS http://localhost:8080/actuator/health`.
+
+VS Code reenvía los puertos 8080 y 5432; puedes consultar el reenvío en la pestaña **Ports (Puertos)**. Accede a la API desde tu máquina en `http://localhost:8080` (o en la dirección que muestre esa pestaña).
+
+El Dev Container prepara el entorno de desarrollo; el arranque de los servicios se realiza con el comando anterior. También puedes ejecutar `mvn test` en su terminal. Para detener los servicios, ejecuta `docker compose down` en esa misma terminal.
 
 ### Ejemplos de uso con curl
 
