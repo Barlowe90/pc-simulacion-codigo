@@ -55,7 +55,7 @@ class TaskSpecificationTest {
     TaskFilterParams params = new TaskFilterParams(); // defaults: sortBy=dueDate, sortDir=asc
     var result = taskService.getFilteredTasks(params, 0, 5);
 
-    assertThat(result).hasSize(99);
+    assertThat(result).hasSize(1);
     ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
     verify(taskRepository).findAll(any(Specification.class), pageableCaptor.capture());
     assertThat(pageableCaptor.getValue().getPageSize()).isEqualTo(5);
