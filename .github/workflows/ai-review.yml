@@ -45,7 +45,7 @@ jobs:
                   'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                  model: 'modelo-inexistente-prueba-error',
+                  model: 'gpt-oss:120b',
                   messages: [
                     {
                       role: 'system',
