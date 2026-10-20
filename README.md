@@ -1,10 +1,12 @@
 # Task Manager API
 
+[![CI](https://github.com/Barlowe90/pc-simulacion-codigo/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Barlowe90/pc-simulacion-codigo/actions/workflows/ci.yml)
+
 API REST de gestión de tareas construida con **Spring Boot 3** y **Java 21**, gestionada con Maven. Proyecto desarrollado como parte del [Boletín 1: Git y proyecto Maven](https://practicas-continuas-umu.github.io/apuntes/practicas/boletin1-git-maven.html) de Prácticas Continuas UMU.
 
 ## Descripción
 
-La aplicación expone una API REST completa para gestionar tareas (*To-Do*). Cada tarea tiene:
+La aplicación expone una API REST completa para gestionar tareas (_To-Do_). Cada tarea tiene:
 
 - `id` — identificador único generado automáticamente
 - `title` — título (obligatorio)
@@ -47,8 +49,8 @@ src/
 
 Para compilar y ejecutar directamente en tu máquina:
 
-| Herramienta | Versión mínima | Comprobación   |
-|-------------|----------------|----------------|
+| Herramienta | Versión mínima | Comprobación    |
+| ----------- | -------------- | --------------- |
 | Git         | 2.x            | `git --version` |
 | JDK         | 21             | `java -version` |
 | Maven       | 3.9.x          | `mvn -version`  |
@@ -136,9 +138,9 @@ Necesitas Docker en ejecución, Visual Studio Code y la extensión **Dev Contain
 4. Edita `.env` y establece tu contraseña en `POSTGRES_PASSWORD`.
 5. En la terminal integrada del Dev Container, arranca el proyecto:
 
-   ```bash
-   docker compose up --build -d
-   ```
+    ```bash
+    docker compose up --build -d
+    ```
 
 6. Comprueba el arranque con `docker compose ps`, `docker compose logs -f api` y `curl -fsS http://localhost:8080/actuator/health`.
 
@@ -204,15 +206,15 @@ Este proyecto sigue [Conventional Commits](https://www.conventionalcommits.org/)
 tipo(ámbito): descripción en imperativo
 ```
 
-| Tipo       | Cuándo usarlo                                       |
-|------------|-----------------------------------------------------|
-| `feat`     | Nueva funcionalidad                                 |
-| `fix`      | Corrección de un error                              |
-| `test`     | Añadir o corregir tests                             |
-| `refactor` | Cambio interno sin nueva funcionalidad ni fix       |
-| `docs`     | Documentación                                       |
-| `chore`    | Herramientas de build, configuración, dependencias  |
-| `ci`       | Cambios en el pipeline de CI/CD                     |
+| Tipo       | Cuándo usarlo                                      |
+| ---------- | -------------------------------------------------- |
+| `feat`     | Nueva funcionalidad                                |
+| `fix`      | Corrección de un error                             |
+| `test`     | Añadir o corregir tests                            |
+| `refactor` | Cambio interno sin nueva funcionalidad ni fix      |
+| `docs`     | Documentación                                      |
+| `chore`    | Herramientas de build, configuración, dependencias |
+| `ci`       | Cambios en el pipeline de CI/CD                    |
 
 Ejemplo: `feat(tasks): añade filtro de búsqueda por prioridad`
 prueba
