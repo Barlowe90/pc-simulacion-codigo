@@ -17,3 +17,9 @@ test.txt
 # Env
 .env
 commons-lang/
+
+# Sitio generado automáticamente
+docs/site/
+
+# Entorno virtual de Python
+.venv/
