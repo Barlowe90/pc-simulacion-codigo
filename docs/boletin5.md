@@ -6,13 +6,22 @@ Los siguientes commits corresponden a la **parte D (GitHub Pages)** realizada po
 
 | # | Mensaje del commit | Qué se hizo | Autor | Enlace |
 |---|---|---|---|---|
-| 1 | `docs: incorporo a memoria boletin 4` | Se añade `docs/boletin4.md` y sus capturas en `docs/imagenes/boletin4/`. | Adri (`Barlowe90`) | [ee2f78a](https://github.com/Barlowe90/pc-simulacion-codigo/commit/ee2f78a) |
-| 2 | `feat(docs): genera sitio HTML desde Markdown` | Se añade el generador Python, su dependencia y las exclusiones de archivos generados. | Adri (`Barlowe90`) | [8a00b58](https://github.com/Barlowe90/pc-simulacion-codigo/commit/8a00b58) |
-| 3 | `ci: publica documentación en GitHub Pages` | Se añade el workflow de construcción y publicación automática de la documentación. | Adri (`Barlowe90`) | [00e0cb2](https://github.com/Barlowe90/pc-simulacion-codigo/commit/00e0cb2) |
+| 1 | `ci: publicar imagen Docker en GHCR` | Se añadió el workflow para construir, etiquetar y publicar automáticamente la imagen Docker en GHCR. | felipehdzc | [b5c4481](https://github.com/Barlowe90/pc-simulacion-codigo/commit/b5c44810eaab247b5dab9702063c52af8dc2fafb) |
+| 2 | `docs: incorporo a memoria boletin 4` | Se añade `docs/boletin4.md` y sus capturas en `docs/imagenes/boletin4/`. | Adri (`Barlowe90`) | [ee2f78a](https://github.com/Barlowe90/pc-simulacion-codigo/commit/ee2f78a) |
+| 3 | `feat(docs): genera sitio HTML desde Markdown` | Se añade el generador Python, su dependencia y las exclusiones de archivos generados. | Adri (`Barlowe90`) | [8a00b58](https://github.com/Barlowe90/pc-simulacion-codigo/commit/8a00b58) |
+| 4 | `ci: publica documentación en GitHub Pages` | Se añade el workflow de construcción y publicación automática de la documentación. | Adri (`Barlowe90`) | [00e0cb2](https://github.com/Barlowe90/pc-simulacion-codigo/commit/00e0cb2) |
 
 ## Detalle por commit
 
-### 1. `docs: incorporo a memoria boletin 4` (`ee2f78a`)
+### 1. `ci: publicar imagen Docker en GHCR`
+
+- **Qué se hizo:** Se creó `.github/workflows/release.yml` para construir y publicar la imagen Docker cuando llegan cambios a `main` o se sube una etiqueta `vX.Y.Z`. El workflow descarga el código, se autentica en GHCR mediante `GITHUB_TOKEN`, genera las etiquetas y construye y publica la imagen. Se configuraron los permisos `contents: read` y `packages: write`.
+- **Autor:** felipehdzc.
+- **Relación con el boletín:** Parte A — Pipeline de publicación. Implementa la construcción, el etiquetado y la publicación automática de la imagen en GitHub Container Registry.
+- **Uso de IA:** ChatGPT, para revisar el Dockerfile, explicar la configuración y las comprobaciones del workflow.
+
+
+### 2. `docs: incorporo a memoria boletin 4` (`ee2f78a`)
 
 - **Qué se hizo:** se incorporó la memoria del Boletín 4 a `docs/boletin4.md` y sus capturas a `docs/imagenes/boletin4/`, conservando los nombres y la organización por boletín utilizada en OneDrive. Los archivos que anteriormente estaban directamente en `docs/` se organizaron en `docs/old/` para no mezclarlos con las nuevas memorias.
 - **Autor:** Adri (`Barlowe90`).
@@ -20,7 +29,7 @@ Los siguientes commits corresponden a la **parte D (GitHub Pages)** realizada po
 - **Verificación:** se abrió el Markdown en el visor local y las imágenes se visualizaron correctamente.
 - **Uso de IA:** ChatGPT (OpenAI) orientó la estructura de carpetas y la separación de commits. La copia, comprobación y el commit se realizaron manualmente.
 
-### 2. `feat(docs): genera sitio HTML desde Markdown` (`8a00b58`)
+### 3. `feat(docs): genera sitio HTML desde Markdown` (`8a00b58`)
 
 - **Qué se hizo:** se creó `docs/generar_site.py` para transformar los archivos `docs/*.md` en `docs/site/*.html`, generar un `index.html` con enlaces a cada boletín y copiar `docs/imagenes/` manteniendo las subcarpetas. También se añadió `docs/requirements.txt` con la dependencia Python `Markdown` y se actualizaron las exclusiones del `.gitignore` para `docs/site/` y `.venv/`.
 - **Autor:** Adri (`Barlowe90`).
@@ -28,7 +37,7 @@ Los siguientes commits corresponden a la **parte D (GitHub Pages)** realizada po
 - **Verificación:** se ejecutó `python docs/generar_site.py`, que generó `boletin4.html` y `index.html`. Se abrió `docs/site/index.html` en el navegador y se comprobaron la navegación y las imágenes. `git status` confirmó que ni `docs/site/` ni `.venv/` se incluían entre los cambios.
 - **Uso de IA:** ChatGPT (OpenAI) ayudó a elaborar el script Python, la lista de dependencias y las instrucciones de prueba; el código se revisó y se ejecutó localmente.
 
-### 3. `ci: publica documentación en GitHub Pages` (`00e0cb2`)
+### 4. `ci: publica documentación en GitHub Pages` (`00e0cb2`)
 
 - **Qué se hizo:** se creó `.github/workflows/pages.yml`, preparado para ejecutarse en cada `push` a `main`. El workflow instala Python y las dependencias, genera `docs/site/`, lo empaqueta como artefacto de GitHub Pages y lo despliega con las acciones oficiales de GitHub.
 - **Autor:** Adri (`Barlowe90`).
@@ -42,7 +51,32 @@ Los siguientes commits corresponden a la **parte D (GitHub Pages)** realizada po
 
 ### Parte A (Felipe)
 
-...
+En esta parte añadí un pipeline para construir la imagen Docker de la API y publicarla automáticamente en GitHub Container Registry. Trabajé en la rama `feat/cd-publicacion` y registré la implementación en el commit `b5c4481`.
+
+Primero revisé el Dockerfile existente. Este ya compilaba la aplicación con Maven y Java 21 en una primera etapa y copiaba el JAR generado a una segunda imagen de ejecución. Por ello, no fue necesario modificarlo ni añadir pasos de compilación con Maven al workflow.
+
+Después creé `.github/workflows/release.yml`, manteniendo el workflow de CI que ya teníamos. El nuevo workflow utiliza `actions/checkout@v4` para descargar el código y `docker/login-action@v3` para autenticarse en GHCR mediante `GITHUB_TOKEN`. Configuré los permisos `contents: read` para leer el repositorio y `packages: write` para publicar la imagen.
+
+A continuación, `docker/metadata-action@v5` genera las etiquetas y los metadatos. Finalmente, `docker/build-push-action@v6` construye la imagen utilizando el Dockerfile y la publica en `ghcr.io/barlowe90/pc-simulacion-codigo`.
+
+Subí los cambios y abrí el [PR #24](https://github.com/Barlowe90/pc-simulacion-codigo/pull/24). Mi compañero incorporó los cambios de `main` a la rama mediante el commit `5a88e02`. Posteriormente, el PR se fusionó en `main`, generando el commit de merge `6f82907`.
+
+El workflow contempla estas dos situaciones:
+
+- **Al fusionar un PR a `main`:** el merge provoca un evento `push` sobre esa rama y se construye y publica la imagen. Se generan las etiquetas `sha-<SHA corto del commit>` y `latest`. La primera permite identificar el commit construido y la segunda se actualiza porque `main` es la rama predeterminada. En esta ejecución no se generan etiquetas SemVer.
+- **Al subir una etiqueta `vX.Y.Z`:** el workflow vuelve a ejecutarse y genera las etiquetas `X.Y.Z`, `X.Y` y `X`, además de la etiqueta basada en el SHA. Por ejemplo, `v1.2.3` genera `1.2.3`, `1.2` y `1`. Con esta configuración también se genera `latest`, debido al comportamiento automático de `metadata-action` para versiones SemVer estables. Esta comprobación práctica corresponde a la parte B.
+
+Después del merge, comprobé que el workflow `Release` se ejecutó correctamente y que el job `publish` terminó en verde. En la siguiente captura se muestran completados los pasos de descarga del código, autenticación en GHCR, generación de metadatos y construcción y publicación de la imagen:
+
+![Ejecución correcta del job publish tras fusionar el PR #24](imagenes/boletin5/boletin-5-publish.png)
+
+A continuación, accedí a **Packages** y comprobé que la imagen se había publicado con las etiquetas `latest` y `sha-6f82907`. Ambas aparecen asociadas a la misma versión de la imagen:
+
+![Imagen publicada en GHCR con las etiquetas latest y sha-6f82907](imagenes/boletin5/boletin-5-package.png)
+
+El SHA de la etiqueta corresponde al commit de merge construido en `main`, por lo que es distinto del commit `b5c4481`, en el que añadí el workflow. Esto permite relacionar la imagen publicada con el código exacto utilizado para construirla.
+
+Con estas comprobaciones quedó verificada la publicación automática de la imagen solicitada en la parte A.
 
 ### Parte B (Adri)
 
@@ -297,7 +331,7 @@ Se acordó organizar las memorias Markdown en `docs/`, con las capturas en subca
 
 Adri incorporó `docs/boletin4.md` junto a sus imágenes y comprobó visualmente que las referencias relativas funcionaban. Este trabajo se registró en el commit [`ee2f78a`](https://github.com/Barlowe90/pc-simulacion-codigo/commit/ee2f78a).
 
-**Reparto acordado:** Felipe se ocupa de los boletines 1, 2 y 3; Adri se encargó del Boletín 4 y del generador y la configuración de Pages. La memoria definitiva del Boletín 5 se incorporará más adelante mediante **otra rama y otra PR**, cuando esté terminada.
+**Reparto acordado para subir los boletines:** Felipe se ocupa de los boletines 1, 2 y 3; Adri se encargó del Boletín 4 y del generador y la configuración de Pages. La memoria definitiva del Boletín 5 se incorporará más adelante mediante **otra rama y otra PR**, cuando esté terminada.
 
 #### D.2. Generación del sitio HTML en local
 
